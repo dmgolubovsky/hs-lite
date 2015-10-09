@@ -10,6 +10,8 @@ public:
 
 	void open_url(const litehtml::tstring& url);
 	void set_url(const litehtml::tstring& url);
+	int on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line,
+		Glib::RefPtr<Gtk::Application>& app);
 
 private:
     void on_go_clicked();
@@ -23,4 +25,5 @@ protected:
 	Gtk::HBox			m_hbox;
 	Gtk::ScrolledWindow	m_scrolled_wnd;
 };
+
 

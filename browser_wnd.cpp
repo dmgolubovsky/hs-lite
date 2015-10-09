@@ -37,6 +37,18 @@ browser_window::~browser_window()
 
 }
 
+int browser_window::on_command_line(const Glib::RefPtr<Gio::ApplicationCommandLine>& command_line,
+                    Glib::RefPtr<Gtk::Application>& app)
+{
+	int argc = 0;
+	char** argv = command_line->get_arguments(argc);
+	if(argc > 1) {
+		m_html.open_page(argv[1]);
+	}
+	app->activate();
+	return EXIT_SUCCESS;
+}
+
 void browser_window::on_go_clicked()
 {
 	litehtml::tstring url = m_address_bar.get_text();
