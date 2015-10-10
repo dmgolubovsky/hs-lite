@@ -19,10 +19,7 @@ private:
 
 protected:
 	html_widget			m_html;
-	Gtk::Entry			m_address_bar;
-	Gtk::Button			m_go_button;
 	Gtk::VBox			m_vbox;
-	Gtk::HBox			m_hbox;
 	Gtk::ScrolledWindow	m_scrolled_wnd;
 };
 

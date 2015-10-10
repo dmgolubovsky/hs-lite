@@ -117,7 +117,6 @@ void html_widget::open_page(const litehtml::tstring& url)
 	load_text_file(url, html);
 	m_url 		= m_http.get_url();
 	m_base_url	= m_http.get_url();
-	m_browser->set_url(m_url);
 	m_html = litehtml::document::createFromString(html.c_str(), this, m_html_context);
 	if(m_html)
 	{
