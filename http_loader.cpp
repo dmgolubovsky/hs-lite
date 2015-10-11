@@ -23,26 +23,38 @@ size_t http_loader::curlWriteFunction( void *ptr, size_t size, size_t nmemb, voi
     return size * nmemb;
 }
 
+Glib::RefPtr< Gio::InputStream > http_error(std::string s) {
+    Glib::RefPtr< Gio::MemoryInputStream > stream = Gio::MemoryInputStream::create();
+    stream->add_data(s);
+    return stream;
+}
+
 Glib::RefPtr< Gio::InputStream > http_loader::load_file(const litehtml::tstring& url)
 {
     m_url = url;
 
-    Glib::RefPtr< Gio::MemoryInputStream > stream = Gio::MemoryInputStream::create();
+    Poco::URI uri(url);
+    std::string sch(uri.getScheme());
 
-    if(m_curl)
-    {
-        curl_easy_setopt(m_curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(m_curl, CURLOPT_WRITEDATA, &stream);
-        curl_easy_perform(m_curl);
-        char* new_url = NULL;
-        if(curl_easy_getinfo(m_curl, CURLINFO_EFFECTIVE_URL, &new_url) == CURLE_OK)
-        {
-            if(new_url)
-            {
-                m_url = new_url;
-            }
-        }
+
+    if (sch != "file" && sch != "") {
+	return http_error("<h1>Scheme '" + sch + "' not supported</h1>");
     }
+
+    if (sch == "") {
+	uri.setScheme("file");
+    }
+
+    m_url = uri.toString();
+
+    std::string path(uri.getPath());
+
+    Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+    if (!file->query_exists()) {
+	return http_error("<h1>File '" + path + "' cannot be opened</h1>");
+    }
+
+    Glib::RefPtr< Gio::InputStream > stream = file->read();
 
     return stream;
 }
